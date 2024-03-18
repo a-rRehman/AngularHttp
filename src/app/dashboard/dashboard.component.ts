@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from "@angular/core";
 import { Task } from "../Model/task";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "app-dashboard",
@@ -35,9 +36,23 @@ export class DashboardComponent implements OnInit {
 
   fetchAlltasks() {
     this.http
-      .get("https://angualrhttpclient-default-rtdb.firebaseio.com/tasks.json")
-      .subscribe((response) => {
-        console.log(response);
+      .get<{ [key: string]: Task }>(
+        "https://angualrhttpclient-default-rtdb.firebaseio.com/tasks.json"
+      )
+      .pipe(
+        map((response) => {
+          //Transform Data
+          let tasks = [];
+          for (let key in response) {
+            if (response.hasOwnProperty(key)) {
+              tasks.push({ ...response[key], id: key });
+            }
+          }
+          return tasks;
+        })
+      )
+      .subscribe((tasks) => {
+        console.log(tasks);
       });
   }
   ngOnInit(): void {
