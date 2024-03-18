@@ -19,7 +19,13 @@ import { TaskDetailsComponent } from "./dashboard/task-details/task-details.comp
     CreateTaskComponent,
     TaskDetailsComponent,
   ],
-  imports: [BrowserModule, FormsModule, HttpClientModule, FormsModule],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    FormsModule,
+    HttpClientModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
