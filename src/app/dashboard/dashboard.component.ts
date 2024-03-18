@@ -1,13 +1,13 @@
 import { Component, OnInit, inject } from "@angular/core";
 import { Task } from "../Model/task";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: "app-dashboard",
   templateUrl: "./dashboard.component.html",
   styleUrls: ["./dashboard.component.css"],
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   showCreateTaskForm: boolean = false;
   http: HttpClient = inject(HttpClient);
   OpenCreateTaskForm() {
@@ -18,14 +18,29 @@ export class DashboardComponent {
     this.showCreateTaskForm = false;
   }
   createTask(data: Task) {
+    const headers = new HttpHeaders({ my_headers: "HelloWorld" });
     console.log("Dashboard", data);
     this.http
-      .post(
+      .post<{ name: string }>(
         "https://angualrhttpclient-default-rtdb.firebaseio.com/tasks.json",
-        data
+        data,
+        {
+          headers: headers,
+        }
       )
       .subscribe((response) => {
         console.log(response);
       });
+  }
+
+  fetchAlltasks() {
+    this.http
+      .get("https://angualrhttpclient-default-rtdb.firebaseio.com/tasks.json")
+      .subscribe((response) => {
+        console.log(response);
+      });
+  }
+  ngOnInit(): void {
+    this.fetchAlltasks();
   }
 }
