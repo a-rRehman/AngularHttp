@@ -11,6 +11,7 @@ import { map } from "rxjs/operators";
 export class DashboardComponent implements OnInit {
   showCreateTaskForm: boolean = false;
   http: HttpClient = inject(HttpClient);
+  allTasks: Task[] = [];
   OpenCreateTaskForm() {
     this.showCreateTaskForm = true;
   }
@@ -31,9 +32,34 @@ export class DashboardComponent implements OnInit {
       )
       .subscribe((response) => {
         console.log(response);
+        this.fetchAlltasks();
       });
   }
-
+  deleteRecord(id: string | undefined) {
+    this.http
+      .delete(
+        "https://angualrhttpclient-default-rtdb.firebaseio.com/tasks/" +
+          id +
+          ".json"
+      )
+      .subscribe((response) => {
+        console.log(response);
+        this.fetchAlltasks();
+      });
+  }
+  deleteAllRecords() {
+    this.http
+      .delete(
+        "https://angualrhttpclient-default-rtdb.firebaseio.com/tasks.json"
+      )
+      .subscribe((response) => {
+        console.log(response);
+        this.fetchAlltasks();
+      });
+  }
+  fetchTasks() {
+    this.fetchAlltasks();
+  }
   fetchAlltasks() {
     this.http
       .get<{ [key: string]: Task }>(
@@ -52,7 +78,7 @@ export class DashboardComponent implements OnInit {
         })
       )
       .subscribe((tasks) => {
-        console.log(tasks);
+        this.allTasks = tasks;
       });
   }
   ngOnInit(): void {
