@@ -9,7 +9,7 @@ import { map } from "rxjs/operators";
 })
 export class TaskService {
   http: HttpClient = inject(HttpClient);
-  CreateTask(task: Task) {
+  CreateOrUpdateTask(task: Task) {
     const headers = new HttpHeaders({ my_headers: "HelloWorld" });
     this.http
       .post<{ name: string }>(
