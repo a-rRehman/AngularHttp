@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Task } from "../Model/task";
 import { HttpHeaders } from "@angular/common/http";
@@ -29,7 +29,8 @@ export class TaskService {
       .delete(
         "https://angualrhttpclient-default-rtdb.firebaseio.com/tasks/" +
           id +
-          ".json"
+          ".json",
+        { observe: "events" }
       )
       .subscribe((response) => {
         console.log(response);
@@ -45,9 +46,14 @@ export class TaskService {
       });
   }
   GetAlltasks() {
+    let headers = new HttpHeaders();
+    headers = headers.append("Access-Control-Allow-Origin", "*");
+    headers = headers.append("content-type", "application/json");
+    let params = new HttpParams().set("page", "2").set("size", "3");
     return this.http
       .get<{ [key: string]: Task }>(
-        "https://angualrhttpclient-default-rtdb.firebaseio.com/tasks.json"
+        "https://angualrhttpclient-default-rtdb.firebaseio.com/tasks.json",
+        { headers: headers, params: params }
       )
       .pipe(
         map((response) => {
@@ -59,6 +65,42 @@ export class TaskService {
             }
           }
           return tasks;
+        })
+      );
+  }
+  //Not returning obserable.
+  // getTaskDetails(id: string | undefined) {
+  //   this.http
+  //     .get(
+  //       "https://angualrhttpclient-default-rtdb.firebaseio.com/tasks/" +
+  //         id +
+  //         ".json"
+  //     )
+  //     .pipe(
+  //       map((response) => {
+  //         let task = {};
+  //         task = { ...response, id };
+  //         return task;
+  //       })
+  //     )
+  //     .subscribe((task) => {
+  //       console.log(task);
+  //     });
+  // }
+
+  //Returning obserable.
+  getTaskDetails(id: string | undefined) {
+    return this.http
+      .get(
+        "https://angualrhttpclient-default-rtdb.firebaseio.com/tasks/" +
+          id +
+          ".json"
+      )
+      .pipe(
+        map((response) => {
+          let task = {};
+          task = { ...response, id };
+          return task;
         })
       );
   }

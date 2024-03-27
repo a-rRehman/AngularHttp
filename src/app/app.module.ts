@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-
 import { AppComponent } from "./app.component";
 import { HeaderComponent } from "./header/header.component";
 import { FooterComponent } from "./footer/footer.component";
@@ -9,6 +8,8 @@ import { CreateTaskComponent } from "./dashboard/create-task/create-task.compone
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TaskDetailsComponent } from "./dashboard/task-details/task-details.component";
+import { AuthInterceptorService } from "./Services/auth-interceptor.service";
+import { LoggingInterceptorService } from "./Services/logging-interceptor.service";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,18 @@ import { TaskDetailsComponent } from "./dashboard/task-details/task-details.comp
     FormsModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoggingInterceptorService,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

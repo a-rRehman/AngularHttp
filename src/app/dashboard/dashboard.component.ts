@@ -9,6 +9,8 @@ import { TaskService } from "../Services/task.service";
   styleUrls: ["./dashboard.component.css"],
 })
 export class DashboardComponent implements OnInit {
+  currentTask: Task | null = null;
+  showTaskDetail: boolean = false;
   EditMode: boolean = false;
   showCreateTaskForm: boolean = false;
   http: HttpClient = inject(HttpClient);
@@ -28,6 +30,21 @@ export class DashboardComponent implements OnInit {
       priority: "",
       status: "",
     };
+  }
+  onDetail(id: string | null) {
+    this.showTaskDetail = !this.showTaskDetail;
+    //When we dont return obserable
+    //this.taskService.getTaskDetails(id);
+    //When we return obserable
+    this.taskService.getTaskDetails(id).subscribe({
+      next: (data: Task) => {
+        this.currentTask = data;
+      },
+    });
+  }
+
+  CloseTaskDetails() {
+    this.showTaskDetail = false;
   }
 
   CloseCreateTaskForm() {
